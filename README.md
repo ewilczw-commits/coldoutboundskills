@@ -2,13 +2,28 @@
 
 Open-source [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) for cold email infrastructure, lead sourcing, copywriting, and operations. Built by [GrowthEngineX](https://growthengine-x.com) from patterns across 1,000+ real B2B campaigns.
 
-30 skills that work together. Clone the repo, bring your API keys, point Claude Code at it, go from zero to a running campaign.
+38 skills that work together. Clone the repo, bring your API keys, point Claude Code at it, go from zero to a running campaign.
 
 **New here?** Invoke `/cold-email-kickoff` — it's the guided entry point that orchestrates ICP + lead magnet + strategy + plan in one flow.
 
+## New in this fork
+
+This fork adds 8 skills on top of the original 30 — mainly full Instantly.ai parity for the Smartlead-only skills, plus an alternative title-first list-building provider:
+
+- **`quickenrich-list-builder`** — title-first list building via QuickEnrich (free discovery + pay-per-email; catches vertical SaaS companies LinkedIn's industry taxonomy mistags)
+- **`instantly-inbox-manager`** — warmup, signatures, tagging, health dashboard for Instantly
+- **`instantly-campaign-upload-public`** — DRAFT campaign upload for Instantly
+- **`instantly-api`** — Instantly API v2 reference
+- **`instantly-spintax`** — Instantly spintax (genuinely different syntax from Smartlead's: `{{RANDOM | a | b}}`, not `{a|b}`)
+- **`instantly-deliverability-audit`** — full deliverability audit for Instantly
+- **`instantly-deliverability-test`** — inbox-type comparison for Instantly
+- **`instantly-positive-reply-scoring`** — reply classification/scoring for Instantly
+
+Every `instantly-*` skill mirrors the operations of its Smartlead counterpart, cross-referenced throughout this README, `docs/roadmap.md`, and the relevant skill files wherever the Smartlead version is surfaced — pick whichever platform you're actually on.
+
 ## What's in here
 
-30 skills organized in 5 tracks, plus 19 signal playbooks in Track 6 — each shipping three ways (a Claude skill, a Clay table build, and a Clay CLI workflow).
+38 skills organized in 5 tracks (30 original + 8 added in this fork — see "New in this fork" above), plus 19 signal playbooks in Track 6 — each shipping three ways (a Claude skill, a Clay table build, and a Clay CLI workflow).
 
 **New to cold email? Start with `/cold-email-kickoff`.** It orchestrates ICP → lead magnet → campaign strategy → plan in one guided flow.
 
