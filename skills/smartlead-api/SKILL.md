@@ -205,3 +205,4 @@ Return to the skill that sent you here.
 ## Related skills
 
 - Every skill that touches Smartlead uses this reference.
+- `/instantly-api` — the Instantly equivalent

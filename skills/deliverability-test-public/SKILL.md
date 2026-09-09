@@ -81,6 +81,7 @@ Takeaways:
 - `/email-deliverability-audit` — full audit (SPF/DKIM/DMARC + reputation + spam placement)
 - `/positive-reply-scoring` — the metric that matters, not just reply rate
 - `/smartlead-inbox-manager` — rotate out bad inboxes, tag by performance
+- `/instantly-deliverability-test` — the Instantly equivalent; groups by provider_code instead of Smartlead's type field
 
 ## Scripts
 

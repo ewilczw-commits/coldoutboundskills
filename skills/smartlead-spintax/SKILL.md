@@ -166,3 +166,4 @@ Keep flags minimal. Only flag things that would actually hurt the email's perfor
 
 - `/campaign-copywriting` — writes the base copy this skill varies
 - `/smartlead-campaign-upload-public` — launches the spintaxed campaign
+- `/instantly-spintax` — the Instantly equivalent — **different syntax**, not a relabel: `{{RANDOM | opt1 | opt2}}` vs this skill's `{opt1|opt2}`

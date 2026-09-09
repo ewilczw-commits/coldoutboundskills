@@ -1,6 +1,6 @@
 ---
 name: deliverability-incident-response
-description: Triage playbook for when cold email deliverability breaks. Decision-tree guidance for "I landed in spam", "bounce rate spiked", "domain blacklisted", "inbox blocked in warmup", "reply rate dropped". Tells you what to check first, what to fix, and how long the fix takes. Pair with /email-deliverability-audit for diagnosis.
+description: Triage playbook for when cold email deliverability breaks. Decision-tree guidance for "I landed in spam", "bounce rate spiked", "domain blacklisted", "inbox blocked in warmup", "reply rate dropped". Tells you what to check first, what to fix, and how long the fix takes. Pair with /email-deliverability-audit (Smartlead) or /instantly-deliverability-audit (Instantly) for diagnosis.
 ---
 
 # Deliverability Incident Response
@@ -39,19 +39,19 @@ Are ALL campaigns dropping, or just one?
 
 ### Step 3: Fleet-wide drop — check these in order
 
-1. **Smartlead Smart Delivery spam test** (`/email-deliverability-audit` → `run-spam-test.ts`)
+1. **Spam placement test** — Smartlead: Smart Delivery (`/email-deliverability-audit` → `run-spam-test.ts`); Instantly: Inbox Placement Test (`/instantly-deliverability-audit` → `run-spam-test.ts`)
    - If inbox placement <70% → real deliverability issue, skip to Step 4
    - If inbox placement >85% → deliverability is fine, look at copy/targeting instead
 
-2. **Check domain authentication** (`/email-deliverability-audit` → `check-domain-auth.ts`)
+2. **Check domain authentication** (`/email-deliverability-audit` or `/instantly-deliverability-audit` → both share `check-domain-auth.ts` — platform-agnostic DNS lookups)
    - Missing DKIM on any domain → fix immediately (see `/zapmail-domain-setup-public` for reconnect steps)
    - DMARC policy=reject with alignment failures → temporarily lower to quarantine
 
-3. **Check warmup status** (`/smartlead-inbox-manager` → `list-health.ts`)
+3. **Check warmup status** — Smartlead: `/smartlead-inbox-manager` → `list-health.ts`; Instantly: `/instantly-inbox-manager` → `list-health.ts`
    - If multiple inboxes blocked in warmup → warmup network flagged you
    - If reputation dropped "good" → "fair" on many inboxes → slow down sending volume
 
-4. **Check bounce rate** (`/email-deliverability-audit` → `audit-performance.ts`)
+4. **Check bounce rate** — Smartlead: `/email-deliverability-audit` → `audit-performance.ts`; Instantly: `/instantly-deliverability-audit` → `audit-performance.ts`
    - If bounce >3% → list quality degraded
    - If bounce <1% but reply rate low → emails landing in spam (Step 1 result)
 
@@ -73,7 +73,7 @@ Time-ordered actions:
 
 ### Step 1: What kind of bounces?
 
-Smartlead categorizes bounces as hard (invalid address) or soft (temporary).
+Smartlead categorizes bounces as hard (invalid address) or soft (temporary). Instantly's `bounced_count` (from `/campaigns/analytics`) doesn't split hard/soft in the API response the way Smartlead does — treat any bounce spike on Instantly as needing list-quality verification first (MillionVerifier), since you can't cheaply distinguish the two causes from the API alone.
 
 ```
 bounce_rate > 3% AND mostly_hard_bounces
@@ -102,7 +102,7 @@ Slow way down. Cut daily volume 50% per inbox for 2 weeks. Run warmup more aggre
 ### Step 1: Confirm the blacklist
 
 Check:
-- Spamhaus, Barracuda, SURBL via `/email-deliverability-audit` → spam-test report → blacklist detail
+- Spamhaus, Barracuda, SURBL via `/email-deliverability-audit` → spam-test report → blacklist detail (Smartlead only — Instantly's Inbox Placement Test doesn't return a blacklist breakdown; use MX Toolbox as the primary check on Instantly)
 - MX Toolbox (https://mxtoolbox.com/blacklists.aspx) for a second opinion
 
 ### Step 2: What tier of blacklist?
@@ -121,30 +121,33 @@ Check:
 
 ### Step 1: Why is it blocked?
 
-Smartlead's `is_warmup_blocked: true` flag usually means:
+**Smartlead**'s `is_warmup_blocked: true` flag, or **Instantly**'s `warmup_status` of `-1` (Banned) or `-3` (Permanent Suspension) usually means:
 - Your warmup emails looked like spam to the warmup network
 - Too many warmup peers marked them as spam
 - The inbox type/provider is rate-limiting
 
 ### Step 2: Triage
 
-1. Check the `blocked_reason` field (if populated)
+1. Smartlead: check the `blocked_reason` field (if populated). Instantly: check `status_message` on the account object for a code/response detail.
 2. If warmup network issue → the inbox reputation may be damaged. Cost-benefit:
    - Young inbox (<30 days) → retire, provision new
-   - Established inbox (>90 days, previously good reputation) → try disabling and re-enabling warmup with lower `total_warmup_per_day` (try 15 instead of 40)
+   - Established inbox (>90 days, previously good reputation) → try disabling and re-enabling warmup with a lower limit (Smartlead: `total_warmup_per_day` 15 instead of 40; Instantly: `warmup.limit: 15` and `warmup.increment: "disabled"`)
 3. If ISP rate-limit → wait 48h, re-enable warmup
 
-### Step 3: Retire workflow (via `/smartlead-inbox-manager`)
+### Step 3: Retire workflow
 
+**Smartlead** (via `/smartlead-inbox-manager`):
 ```bash
-# Tag as retired
 npx tsx scripts/tag-inboxes.ts --ids=<id> --add-tag=retired --remove-tag=active
-
-# Disable warmup
 npx tsx scripts/set-warmup.ts --mode=disable --ids=<id>
+# Replace — buy new domain, create new inbox: see /zapmail-domain-setup-public
+```
 
-# Replace — buy new domain, create new inbox
-# See /zapmail-domain-setup-public
+**Instantly** (via `/instantly-inbox-manager`):
+```bash
+npx tsx scripts/tag-inboxes.ts --emails=<email> --add-tag=retired --remove-tag=active
+npx tsx scripts/set-warmup.ts --mode=disable --emails=<email>
+# Replace — buy new domain, create new inbox: see /zapmail-domain-setup-public
 ```
 
 ## Decision tree: "Gmail marking as promotional"
@@ -175,8 +178,8 @@ Create two versions — your current and a stripped-down version. Send 50 leads 
 If NOTHING is working and you don't know why:
 
 1. **Pause all campaigns.** Stop damage.
-2. **Audit:** run `/email-deliverability-audit` full suite
-3. **Spam test:** run Smart Delivery on 2 sender subsets
+2. **Audit:** run `/email-deliverability-audit` (Smartlead) or `/instantly-deliverability-audit` (Instantly) full suite
+3. **Spam test:** run a placement test on 2 sender subsets (Smart Delivery on Smartlead, Inbox Placement Test on Instantly)
 4. **Check SPF/DKIM/DMARC on every domain** — if ANY are missing, fix before resuming
 5. **Check Zapmail health dashboard** — if their IPs are in trouble, everyone on their pool is too
 6. **Reduce volume 75%** for the restart
@@ -191,7 +194,7 @@ If NOTHING is working and you don't know why:
 
 ## What to do next
 
-**Re-run `/email-deliverability-audit --days=7` in 7 days** to confirm recovery. Domain/inbox reputation rebuilds slowly — don't re-audit before the 7-day window.
+**Re-run `/email-deliverability-audit --days=7` (or `/instantly-deliverability-audit`) in 7 days** to confirm recovery. Domain/inbox reputation rebuilds slowly — don't re-audit before the 7-day window.
 
 Meanwhile: continue the weekly rhythm via `/cold-email-weekly-rhythm`, which catches new issues as they emerge.
 
@@ -199,10 +202,11 @@ Meanwhile: continue the weekly rhythm via `/cold-email-weekly-rhythm`, which cat
 
 ## Related skills
 
-- `/email-deliverability-audit` — the diagnostic suite you run first
-- `/smartlead-inbox-manager` — tag, rotate, retire inboxes
+- `/email-deliverability-audit` — the diagnostic suite you run first (Smartlead)
+- `/instantly-deliverability-audit` — the diagnostic suite you run first (Instantly)
+- `/smartlead-inbox-manager` / `/instantly-inbox-manager` — tag, rotate, retire inboxes
 - `/zapmail-domain-setup-public` — replace a burned domain
-- `/positive-reply-scoring` — confirm recovery (reply rate back to baseline)
+- `/positive-reply-scoring` / `/instantly-positive-reply-scoring` — confirm recovery (reply rate back to baseline)
 
 ## The 1% rule sanity check
 

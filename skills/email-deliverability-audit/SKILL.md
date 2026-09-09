@@ -211,6 +211,7 @@ Feed the action items into the right skills:
 - `/zapmail-domain-setup-public` — fix DNS/auth issues at the domain provider
 - `/spam-word-checker` — check copy for spam-triggering phrases
 - `/deliverability-test-public` — lighter-weight SMTP vs Gmail vs Outlook reply/bounce comparison
+- `/instantly-deliverability-audit` — the Instantly equivalent; shares `check-domain-auth.ts` with this skill
 
 ## Scripts
 

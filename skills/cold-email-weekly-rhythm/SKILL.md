@@ -30,7 +30,7 @@ Open Google Calendar / Outlook / Apple Reminders / whatever you actually look at
 
 ## Monday — Deliverability audit (15 min)
 
-**Run:**
+**Run:** (`/email-deliverability-audit` on Smartlead, `/instantly-deliverability-audit` on Instantly)
 
 ```bash
 /email-deliverability-audit --days=7
@@ -54,7 +54,7 @@ Open Google Calendar / Outlook / Apple Reminders / whatever you actually look at
 
 ## Wednesday — Positive-reply sweep (30-60 min depending on volume)
 
-**Run:**
+**Run:** (`/positive-reply-scoring` on Smartlead, `/instantly-positive-reply-scoring` on Instantly)
 
 ```bash
 /positive-reply-scoring  # on all campaigns active in the last 7 days
@@ -82,7 +82,7 @@ Open Google Calendar / Outlook / Apple Reminders / whatever you actually look at
 
 For each one:
 
-1. Run `/positive-reply-scoring --campaign-id=<id>`
+1. Run `/positive-reply-scoring --campaign-id=<id>` (or `/instantly-positive-reply-scoring`)
 2. Compare to previous campaigns' positive reply rate baselines
 3. Decide:
    - **Winner (positive reply rate ≥2×baseline):** keep running, consider scaling (clone to more inboxes)
@@ -131,13 +131,13 @@ npx tsx scripts/set-warmup.ts --mode=disable --ids=A,B,C
 
 ## Monthly (1st of the month) — Spam placement test (25 min active, test runs ~20 min)
 
-**Run:** the Smart Delivery spam placement test from `/email-deliverability-audit`:
+**Run:** the spam placement test — Smart Delivery from `/email-deliverability-audit` (Smartlead), or Inbox Placement Testing from `/instantly-deliverability-audit` (Instantly):
 
 ```bash
 npx tsx scripts/run-spam-test.ts --campaign-id=<highest volume active campaign> --senders=100
 ```
 
-(Will use G Suite + Office365 provider pools. 100 senders is a sweet spot — large enough for statistical signal, small enough to avoid API stalls.)
+(Smartlead: uses G Suite + Office365 provider pools, 100 senders is a sweet spot — large enough for statistical signal, small enough to avoid API stalls. Instantly: pass `--senders=` as a comma-separated email list and provide `--subject`/`--body`; it tests against every ESP option available on your plan automatically.)
 
 **Review:**
 
@@ -192,8 +192,8 @@ This skill IS the loop. Your next action is the next calendar event on your list
 
 ## Related skills
 
-- `/email-deliverability-audit` — the Monday and Monthly tasks
-- `/positive-reply-scoring` — the Wednesday and Friday tasks
+- `/email-deliverability-audit` / `/instantly-deliverability-audit` — the Monday and Monthly tasks
+- `/positive-reply-scoring` / `/instantly-positive-reply-scoring` — the Wednesday and Friday tasks
 - `/smartlead-inbox-manager` — the biweekly inbox rotation
 - `/deliverability-incident-response` — when the Monday audit flags something
 - `/experiment-design` — the quarterly retrospective feeds into this

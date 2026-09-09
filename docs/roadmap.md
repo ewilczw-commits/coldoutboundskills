@@ -47,7 +47,7 @@ Ongoing: /cold-email-weekly-rhythm
 | "I need campaign ideas / angles" | `/campaign-strategy` | 15-25 campaign ideas with AI strategies + value props |
 | "I need to write the email copy" | `/campaign-copywriting` | Stepwise direction → subject → body → final YAML |
 | "Draft copy, want to QA before launch" | `/spam-word-checker` | Banned-word scan (copy QA) |
-| "Copy ready, need spintax variations" | `/smartlead-spintax` | Smartlead-compatible spin |
+| "Copy ready, need spintax variations" | `/smartlead-spintax` (or `/instantly-spintax` — different syntax) | Platform-compatible spin |
 | "I need domains to send from" | `/zapmail-domain-setup-public` | Dynadot → Zapmail end-to-end, `.com`/`.co` defaults |
 | "Inboxes exist but aren't configured" | `/smartlead-inbox-manager` (or `/instantly-inbox-manager` on Instantly) | Warmup, signatures (name/title/company/address), tags |
 | "I need a list of leads (title-first)" | `/prospeo-full-export` | Paginated search → CSV. Required: `/icp-prompt-builder` on 50-sample first. |
@@ -59,10 +59,10 @@ Ongoing: /cold-email-weekly-rhythm
 | "List is built, grade it" | `/list-quality-scorecard` | 8-dim grade A+ to F + top issues |
 | "Ready to launch (manual)" | `/smartlead-campaign-upload-public` (or `/instantly-campaign-upload-public` on Instantly) | DRAFT upload, you hit Start in UI |
 | "Want it fully automated" | `/auto-research-public` | 8-phase autonomous launcher |
-| "I have replies, how did I do?" | `/positive-reply-scoring` | Positive reply rate (the north star) |
-| "Reply rate dropped, why?" | `/email-deliverability-audit` | SPF/DKIM/DMARC + 1% rule + spam placement |
+| "I have replies, how did I do?" | `/positive-reply-scoring` (or `/instantly-positive-reply-scoring`) | Positive reply rate (the north star) |
+| "Reply rate dropped, why?" | `/email-deliverability-audit` (or `/instantly-deliverability-audit`) | SPF/DKIM/DMARC + 1% rule + spam placement |
 | "Things broke, what do I fix?" | `/deliverability-incident-response` | Triage decision tree |
-| "Which inbox type works best?" | `/deliverability-test-public` | Gmail vs Outlook vs SMTP comparison |
+| "Which inbox type works best?" | `/deliverability-test-public` (or `/instantly-deliverability-test`) | Gmail vs Outlook vs SMTP comparison |
 | "Want to run an experiment properly" | `/experiment-design` | Single-variable framework |
 | "What do I do every week?" | `/cold-email-weekly-rhythm` | Monday/Wed/Fri/monthly/quarterly playbook |
 
@@ -79,7 +79,7 @@ Ongoing: /cold-email-weekly-rhythm
 7. `/smartlead-campaign-upload-public` (or `/instantly-campaign-upload-public`) — DRAFT upload, review, hit Start
 8. Put `/cold-email-weekly-rhythm` on your calendar
 9. Campaign runs 21 days
-10. `/positive-reply-scoring` → score the outcome
+10. `/positive-reply-scoring` (or `/instantly-positive-reply-scoring`) → score the outcome
 11. `/experiment-design` → plan campaign #2 with one variable changed
 
 ## The daily automation loop
@@ -88,8 +88,8 @@ Once you've done one campaign manually:
 
 1. Morning: `/auto-research-public --domain=<next-target>` → fires end-to-end campaign
 2. Per `/cold-email-weekly-rhythm`:
-   - Monday: `/email-deliverability-audit --days=7`
-   - Wednesday: `/positive-reply-scoring` on all active campaigns
+   - Monday: `/email-deliverability-audit --days=7` (or `/instantly-deliverability-audit`)
+   - Wednesday: `/positive-reply-scoring` (or `/instantly-positive-reply-scoring`) on all active campaigns
    - Friday: retrospective on any campaign hitting day 21
    - Every 2 weeks: `/smartlead-inbox-manager` (or `/instantly-inbox-manager`) → inbox rotation
    - Monthly: spam placement test
@@ -100,15 +100,15 @@ Once you've done one campaign manually:
 **My campaign has 0% reply rate →**
 - <100 sends: too early, wait
 - 100-500 sends: `/spam-word-checker` on the copy, and manually review for vague CTAs or generic first lines
-- ≥200 sends AND <1% reply rate: the 1% rule failed — run `/email-deliverability-audit` + `/deliverability-incident-response`
+- ≥200 sends AND <1% reply rate: the 1% rule failed — run `/email-deliverability-audit` (or `/instantly-deliverability-audit`) + `/deliverability-incident-response`
 
 **Bounces >3% →**
-- `/email-deliverability-audit` → `run-spam-test.ts` + `check-domain-auth.ts`
+- `/email-deliverability-audit` (or `/instantly-deliverability-audit`) → `run-spam-test.ts` + `check-domain-auth.ts`
 - List probably has dead emails → re-validate with MillionVerifier
 - Check `/list-quality-scorecard` results retroactively
 
 **Lots of negative replies →**
-- `/positive-reply-scoring` → classify them
+- `/positive-reply-scoring` (or `/instantly-positive-reply-scoring`) → classify them
 - If hostile-rate is high: pause, rewrite copy with `/campaign-copywriting`, lighter opener
 - If just "not a fit": targeting is off, run `/experiment-design` with a new list
 
@@ -118,7 +118,7 @@ Once you've done one campaign manually:
 
 **Everything looks good but nothing works →**
 - Domain reputation. Often "wait longer" or "replace the IP pool"
-- `/deliverability-test-public` → see if one inbox type is fine and another isn't
+- `/deliverability-test-public` (or `/instantly-deliverability-test`) → see if one inbox type is fine and another isn't
 - `/deliverability-incident-response` → full triage
 
 **Where do I start if I have nothing?**

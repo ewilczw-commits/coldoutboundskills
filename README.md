@@ -24,7 +24,8 @@ Open-source [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/
 - **`smartlead-inbox-manager`** — warmup settings, signatures (name/title/company/address), active/insurance tagging
 - **`instantly-inbox-manager`** — same operations for Instantly users (warmup, signatures, tagging, health)
 - **`email-deliverability-audit`** — diagnostic tool (SPF/DKIM/DMARC, spam placement, 1% rule)
-- **`deliverability-incident-response`** — triage playbook for spam, bounces, blacklists, warmup blocks
+- **`instantly-deliverability-audit`** — same, for Instantly users (shares the DNS-check script with the Smartlead version)
+- **`deliverability-incident-response`** — triage playbook for spam, bounces, blacklists, warmup blocks (covers both platforms)
 
 ### Track 3 — List Building
 - **`list-builder`** — the meta skill for any list request: one-command lanes that sweep every source, AI-qualify every company, snowball until the market is dry, then pull uncapped contacts and find emails
@@ -43,16 +44,20 @@ Open-source [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/
 - **`cold-email-starter-kit`** — the 14-step end-to-end tutorial (alternative to `/cold-email-kickoff`)
 - **`spam-word-checker`** — scan copy for deliverability-killing phrases
 - **`smartlead-spintax`** — add spintax variations to emails
+- **`instantly-spintax`** — same, for Instantly users — **different syntax**: `{{RANDOM | a | b}}`, not `{a|b}`
 - **`smartlead-api`** — Smartlead API reference
+- **`instantly-api`** — Instantly API reference
 - **`smartlead-campaign-upload-public`** — DRAFT-upload leads.csv + variants.yaml to Smartlead (always DRAFT, you hit Start manually)
 - **`instantly-campaign-upload-public`** — same, for Instantly users (same variants.yaml + leads.csv schema)
 
 ### Track 5 — Iterate & Automate
 - **`positive-reply-scoring`** — the metric that matters (positive replies / total sent)
+- **`instantly-positive-reply-scoring`** — same, for Instantly users (simpler fetch — one filtered `GET /emails` call instead of Smartlead's per-lead message-history walk)
 - **`experiment-design`** — single-variable experiment framework
 - **`auto-research-public`** — autonomous campaign launcher (scrape → ICP → leads → personalize → upload)
 - **`personalization-subagent-pattern`** — reusable pattern for per-lead Claude sub-agent personalization
 - **`deliverability-test-public`** — compare reply/bounce by inbox type
+- **`instantly-deliverability-test`** — same, for Instantly users (grouped by provider_code instead of Smartlead's type field)
 - **`cold-email-weekly-rhythm`** — Monday/Wednesday/Friday operational playbook — what separates hobbyist from top-1%
 
 
@@ -137,7 +142,7 @@ Alternative: `/cold-email-starter-kit` — the longer manual 14-step tutorial. U
 | Blitz | `BLITZ_API_KEY` | Domain-to-contacts lookup | blitz-list-builder |
 | QuickEnrich | `QUICKENRICH_API_KEY` | List building (title-first, free discovery) | quickenrich-list-builder |
 | RapidAPI | `RAPIDAPI_KEY` | Google Maps scraping, LinkedIn data | google-maps-*, competitor-engagers |
-| Instantly | `INSTANTLY_API_KEY` | Alternative sending platform | starter-kit (09), instantly-inbox-manager, instantly-campaign-upload-public |
+| Instantly | `INSTANTLY_API_KEY` | Alternative sending platform | starter-kit (09), instantly-inbox-manager, instantly-campaign-upload-public, instantly-deliverability-audit, instantly-deliverability-test, instantly-positive-reply-scoring |
 | OpenWebNinja | `OPENWEBNINJA_KEY` | Company news enrichment | starter-kit (07) |
 | OpenRouter | `OPENROUTER_API_KEY` | AI company analysis enrichment | starter-kit (07), competitor-engagers |
 

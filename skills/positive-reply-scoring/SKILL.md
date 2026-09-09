@@ -189,6 +189,7 @@ At the end, surface:
 - `/experiment-design` — uses positive reply rate as the success metric
 - `/email-deliverability-audit` — if hostile + unsub are elevated, run this next
 - `/cold-email-starter-kit` → `10-reply-handling.md` for what to do with the positive replies once flagged
+- `/instantly-positive-reply-scoring` — the Instantly equivalent; identical classification schema
 
 ## Scripts
 
