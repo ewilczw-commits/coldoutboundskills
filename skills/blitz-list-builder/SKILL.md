@@ -164,6 +164,7 @@ After the scorecard, proceed to `/campaign-copywriting` → `/smartlead-campaign
 
 - `/icp-prompt-builder` — qualify the contacts this skill returns BEFORE running email waterfall
 - `/prospeo-full-export` — the title-first alternative
+- `/quickenrich-list-builder` — another title-first alternative; free discovery + pay-per-email, plus a pass that catches vertical SaaS companies LinkedIn's industry taxonomy mistags
 - `/google-maps-list-builder` — for local-business domain lists
 - `/disco-like` — lookalike companies from seed domains
 - `/email-waterfall` — when Blitz doesn't return an email

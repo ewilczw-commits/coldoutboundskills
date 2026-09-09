@@ -16,7 +16,7 @@ One-page map from business-stage to skill. Find where you are, read the "invoke"
 /zapmail-domain-setup-public         ← (if no infra) — 2-week warmup wait
 /smartlead-inbox-manager             ← configure warmup/signatures/tags
     ↓
-/prospeo-full-export | /disco-like | /google-maps-list-builder | /blitz-list-builder | /competitor-engagers
+/prospeo-full-export | /quickenrich-list-builder | /disco-like | /google-maps-list-builder | /blitz-list-builder | /competitor-engagers
     ↑ each invokes /icp-prompt-builder as a required step
     ↓
 /list-quality-scorecard              ← grade the filtered list
@@ -51,6 +51,7 @@ Ongoing: /cold-email-weekly-rhythm
 | "I need domains to send from" | `/zapmail-domain-setup-public` | Dynadot → Zapmail end-to-end, `.com`/`.co` defaults |
 | "Inboxes exist but aren't configured" | `/smartlead-inbox-manager` | Warmup, signatures (name/title/company/address), tags |
 | "I need a list of leads (title-first)" | `/prospeo-full-export` | Paginated search → CSV. Required: `/icp-prompt-builder` on 50-sample first. |
+| "I need a list of leads (title-first), or Prospeo's industry tags miss my vertical" | `/quickenrich-list-builder` | Free discovery + pay-per-email resolution; extra pass catches vertical SaaS mistagged by industry. Required: `/icp-prompt-builder` on 50-sample first. |
 | "I have target domains, need people" | `/blitz-list-builder` | Domain → contacts. Required: `/icp-prompt-builder`. |
 | "I'm targeting local SMBs" | `/google-maps-list-builder` | Scrape Google Maps. Required: `/icp-prompt-builder`. |
 | "I want 'more companies like X'" | `/disco-like` | Lookalike discovery via seed domains. Required: `/icp-prompt-builder`. |
@@ -71,7 +72,7 @@ Ongoing: /cold-email-weekly-rhythm
 2. Follow the kickoff's recommended next skill:
    - **No infra:** `/zapmail-domain-setup-public` → `/smartlead-inbox-manager` → **wait 2 weeks for warmup**
    - **Infra ready:** jump straight to list building
-3. Pick your list source (Prospeo, DiscoLike, Google Maps, Blitz, Competitor-Engagers) — each invokes `/icp-prompt-builder` as a required step
+3. Pick your list source (Prospeo, QuickEnrich, DiscoLike, Google Maps, Blitz, Competitor-Engagers) — each invokes `/icp-prompt-builder` as a required step
 4. `/list-quality-scorecard` — grade the filtered list
 5. `/campaign-copywriting` — write copy for the top campaign from strategy
 6. `/spam-word-checker` — QA (banned words)

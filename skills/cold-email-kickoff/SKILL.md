@@ -124,13 +124,14 @@ Look at the ICP type in the profile and recommend a list-building skill:
 ```
 Your infra is ready. Time to build your list. Based on your ICP (<summary>), the best fit is:
 
-[A] /prospeo-full-export       → title-first search (best for: VP/Director/Head roles in specific industries)
-[B] /disco-like                → lookalike discovery (best for: "more companies like <seed domains>")
-[C] /google-maps-list-builder  → local SMBs (best for: restaurants, clinics, contractors, etc.)
-[D] /blitz-list-builder        → domain-first (best for: named-account ABM, specific company list)
-[E] /competitor-engagers       → LinkedIn engagement (best for: people actively engaged with competitors)
+[A] /prospeo-full-export        → title-first search (best for: VP/Director/Head roles in specific industries)
+[B] /quickenrich-list-builder   → title-first, free discovery + pay-per-email (best for: same as A, plus catching vertical SaaS companies LinkedIn's industry taxonomy mistags)
+[C] /disco-like                 → lookalike discovery (best for: "more companies like <seed domains>")
+[D] /google-maps-list-builder   → local SMBs (best for: restaurants, clinics, contractors, etc.)
+[E] /blitz-list-builder         → domain-first (best for: named-account ABM, specific company list)
+[F] /competitor-engagers        → LinkedIn engagement (best for: people actively engaged with competitors)
 
-Recommendation: <one of A-E based on ICP>. Pick A / B / C / D / E:
+Recommendation: <one of A-F based on ICP>. Pick A / B / C / D / E / F:
 ```
 
 Invoke the picked skill. After it completes, remind user: `/icp-prompt-builder` runs inside that skill (required step), then `/list-quality-scorecard`, then `/campaign-copywriting`, then `/smartlead-campaign-upload-public`.
@@ -164,7 +165,7 @@ Follow whichever branch your Step 6 menu selected. The skill hands you off clean
 - `/campaign-strategy` — invoked in step 4 (15-25 campaign ideas)
 - `/zapmail-domain-setup-public` — offered in step 6 if no infra
 - `/smartlead-inbox-manager` — offered in step 6 after domain setup
-- `/prospeo-full-export`, `/disco-like`, `/google-maps-list-builder`, `/blitz-list-builder`, `/competitor-engagers` — offered in step 6 if infra ready
+- `/prospeo-full-export`, `/quickenrich-list-builder`, `/disco-like`, `/google-maps-list-builder`, `/blitz-list-builder`, `/competitor-engagers` — offered in step 6 if infra ready
 
 ## References
 
