@@ -30,6 +30,7 @@ Open-source [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/
 - **`list-expander`** — turn ~10 known-good seed companies into a full qualified TAM (fingerprint → lookalikes → mined filters → wide pull → AI qualification → live-site verify)
 - **`prospeo-full-export`** — title-first lead search (paginated, 25K+)
 - **`prospeo-search-api`** — Prospeo filter reference
+- **`quickenrich-list-builder`** — title-first search with free discovery + pay-per-email resolution; runs a second pass against company bios to catch vertical SaaS companies LinkedIn's industry taxonomy mis-tags
 - **`blitz-list-builder`** — domain-first contact discovery
 - **`google-maps-list-builder`** — scrape Google Maps for local SMB lists
 - **`disco-like`** — lookalike company discovery (seed domains or NL ICP text)
@@ -132,6 +133,7 @@ Alternative: `/cold-email-starter-kit` — the longer manual 14-step tutorial. U
 | Zapmail | `ZAPMAIL_API_KEY` | Create inboxes | zapmail-setup |
 | MillionVerifier | `MILLIONVERIFIER_API_KEY` | Validate emails before sending | waterfall, auto-research |
 | Blitz | `BLITZ_API_KEY` | Domain-to-contacts lookup | blitz-list-builder |
+| QuickEnrich | `QUICKENRICH_API_KEY` | List building (title-first, free discovery) | quickenrich-list-builder |
 | RapidAPI | `RAPIDAPI_KEY` | Google Maps scraping, LinkedIn data | google-maps-*, competitor-engagers |
 | Instantly | `INSTANTLY_API_KEY` | Alternative sending platform | starter-kit (09) |
 | OpenWebNinja | `OPENWEBNINJA_KEY` | Company news enrichment | starter-kit (07) |
