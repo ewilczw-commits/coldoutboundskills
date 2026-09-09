@@ -22,6 +22,7 @@ Open-source [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/
 ### Track 2 — Infrastructure
 - **`zapmail-domain-setup-public`** — buy `.com`/`.co` domains on Dynadot, provision inboxes on Zapmail
 - **`smartlead-inbox-manager`** — warmup settings, signatures (name/title/company/address), active/insurance tagging
+- **`instantly-inbox-manager`** — same operations for Instantly users (warmup, signatures, tagging, health)
 - **`email-deliverability-audit`** — diagnostic tool (SPF/DKIM/DMARC, spam placement, 1% rule)
 - **`deliverability-incident-response`** — triage playbook for spam, bounces, blacklists, warmup blocks
 
@@ -44,6 +45,7 @@ Open-source [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/
 - **`smartlead-spintax`** — add spintax variations to emails
 - **`smartlead-api`** — Smartlead API reference
 - **`smartlead-campaign-upload-public`** — DRAFT-upload leads.csv + variants.yaml to Smartlead (always DRAFT, you hit Start manually)
+- **`instantly-campaign-upload-public`** — same, for Instantly users (same variants.yaml + leads.csv schema)
 
 ### Track 5 — Iterate & Automate
 - **`positive-reply-scoring`** — the metric that matters (positive replies / total sent)
@@ -135,7 +137,7 @@ Alternative: `/cold-email-starter-kit` — the longer manual 14-step tutorial. U
 | Blitz | `BLITZ_API_KEY` | Domain-to-contacts lookup | blitz-list-builder |
 | QuickEnrich | `QUICKENRICH_API_KEY` | List building (title-first, free discovery) | quickenrich-list-builder |
 | RapidAPI | `RAPIDAPI_KEY` | Google Maps scraping, LinkedIn data | google-maps-*, competitor-engagers |
-| Instantly | `INSTANTLY_API_KEY` | Alternative sending platform | starter-kit (09) |
+| Instantly | `INSTANTLY_API_KEY` | Alternative sending platform | starter-kit (09), instantly-inbox-manager, instantly-campaign-upload-public |
 | OpenWebNinja | `OPENWEBNINJA_KEY` | Company news enrichment | starter-kit (07) |
 | OpenRouter | `OPENROUTER_API_KEY` | AI company analysis enrichment | starter-kit (07), competitor-engagers |
 
@@ -151,7 +153,7 @@ The minimum viable setup for your first campaign is: **Dynadot + Zapmail + Prosp
 
 **If you have experience but no automation:**
 1. `/icp-onboarding` — lock down your ICP
-2. `/smartlead-inbox-manager` — configure your existing inboxes properly
+2. `/smartlead-inbox-manager` (or `/instantly-inbox-manager` on Instantly) — configure your existing inboxes properly
 3. `/email-deliverability-audit` — fix any domain/inbox issues before scaling
 4. `/auto-research-public` — daily automated campaign launches
 

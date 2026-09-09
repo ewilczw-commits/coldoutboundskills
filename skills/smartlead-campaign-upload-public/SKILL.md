@@ -104,6 +104,7 @@ After Start:
 - `/list-quality-scorecard` — dedupe + verify leads.csv before upload
 - `/positive-reply-scoring` — run 21 days post-launch to measure
 - `/cold-email-weekly-rhythm` — operational cadence after launch
+- `/instantly-campaign-upload-public` — the Instantly equivalent; same variants.yaml + leads.csv schema
 
 ## Files
 

@@ -28,9 +28,9 @@ The single entry point for a fresh user. Replaces "stare at 29 skills and guess 
 
 Before touching any business context, ask:
 
-1. **"Do you already have sending domains + inboxes set up on Smartlead?"** (yes / no / not sure)
+1. **"Do you already have sending domains + inboxes set up on Smartlead or Instantly?"** (yes / no / not sure) — note which platform, save as `sending_platform` in the profile
 2. **"At least 20 inboxes that have been warming for 2+ weeks?"** (yes / no)
-3. **"Do you have API keys for Smartlead + Prospeo + MillionVerifier in your `.env`?"** (yes / partial / no)
+3. **"Do you have API keys for your sending platform + Prospeo (or QuickEnrich) + MillionVerifier in your `.env`?"** (yes / partial / no)
 
 These answers determine the next-step menu at Step 6. Save them as `infrastructure_status` in the profile.
 
@@ -88,7 +88,7 @@ Full strategy in: profiles/<slug>/campaign-strategy.md
 
 ## Infrastructure Readiness
 Based on your Step 1 answers:
-- [ ] SMARTLEAD_API_KEY in .env: <yes/no>
+- [ ] Sending platform API key (SMARTLEAD_API_KEY or INSTANTLY_API_KEY) in .env: <yes/no>
 - [ ] PROSPEO_API_KEY in .env: <yes/no>
 - [ ] MILLIONVERIFIER_API_KEY in .env: <yes/no>
 - [ ] Domains purchased: <yes/no>
@@ -108,14 +108,14 @@ Branch on Step 1 answers.
 Your next step is provisioning domains + inboxes. This takes ~2 weeks (because inboxes need
 to warm). Menu:
 
-[A] Start the domain + inbox setup NOW  → /zapmail-domain-setup-public then /smartlead-inbox-manager
+[A] Start the domain + inbox setup NOW  → /zapmail-domain-setup-public then /smartlead-inbox-manager (or /instantly-inbox-manager)
 [B] Save the plan and come back after I have infra
 [C] I want to build my list FIRST (warning: risky — without warmed inboxes, you can't send safely)
 
 Pick A / B / C:
 ```
 
-If A: orient the user, then invoke `/zapmail-domain-setup-public`. After that skill completes, invoke `/smartlead-inbox-manager` for config. Remind the user to wait 2 weeks for warmup before launching.
+If A: orient the user, then invoke `/zapmail-domain-setup-public`. After that skill completes, ask which sending platform they're on (Smartlead or Instantly) if not already known from Step 1, then invoke `/smartlead-inbox-manager` or `/instantly-inbox-manager` for config accordingly. Remind the user to wait 2 weeks for warmup before launching.
 
 **If INFRASTRUCTURE READY (warmed inboxes + API keys present):**
 
@@ -134,7 +134,7 @@ Your infra is ready. Time to build your list. Based on your ICP (<summary>), the
 Recommendation: <one of A-F based on ICP>. Pick A / B / C / D / E / F:
 ```
 
-Invoke the picked skill. After it completes, remind user: `/icp-prompt-builder` runs inside that skill (required step), then `/list-quality-scorecard`, then `/campaign-copywriting`, then `/smartlead-campaign-upload-public`.
+Invoke the picked skill. After it completes, remind user: `/icp-prompt-builder` runs inside that skill (required step), then `/list-quality-scorecard`, then `/campaign-copywriting`, then `/smartlead-campaign-upload-public` (or `/instantly-campaign-upload-public` — check `sending_platform` from Step 1).
 
 ### Step 7: Offer to open the plan
 
@@ -164,7 +164,7 @@ Follow whichever branch your Step 6 menu selected. The skill hands you off clean
 - `/lead-magnet-brainstorm` — invoked in step 3 (picks free offer)
 - `/campaign-strategy` — invoked in step 4 (15-25 campaign ideas)
 - `/zapmail-domain-setup-public` — offered in step 6 if no infra
-- `/smartlead-inbox-manager` — offered in step 6 after domain setup
+- `/smartlead-inbox-manager` or `/instantly-inbox-manager` — offered in step 6 after domain setup, depending on `sending_platform`
 - `/prospeo-full-export`, `/quickenrich-list-builder`, `/disco-like`, `/google-maps-list-builder`, `/blitz-list-builder`, `/competitor-engagers` — offered in step 6 if infra ready
 
 ## References

@@ -14,7 +14,7 @@ One-page map from business-stage to skill. Find where you are, read the "invoke"
 /campaign-strategy                   ← 15-20 campaign angles + value props
     ↓
 /zapmail-domain-setup-public         ← (if no infra) — 2-week warmup wait
-/smartlead-inbox-manager             ← configure warmup/signatures/tags
+/smartlead-inbox-manager             ← configure warmup/signatures/tags (or /instantly-inbox-manager on Instantly)
     ↓
 /prospeo-full-export | /quickenrich-list-builder | /disco-like | /google-maps-list-builder | /blitz-list-builder | /competitor-engagers
     ↑ each invokes /icp-prompt-builder as a required step
@@ -25,7 +25,7 @@ One-page map from business-stage to skill. Find where you are, read the "invoke"
     ↓
 
     ↓
-/smartlead-campaign-upload-public    ← DRAFT only, you hit Start in UI
+/smartlead-campaign-upload-public    ← DRAFT only, you hit Start in UI (or /instantly-campaign-upload-public on Instantly)
     ↓
 (21-day wait)
     ↓
@@ -49,7 +49,7 @@ Ongoing: /cold-email-weekly-rhythm
 | "Draft copy, want to QA before launch" | `/spam-word-checker` | Banned-word scan (copy QA) |
 | "Copy ready, need spintax variations" | `/smartlead-spintax` | Smartlead-compatible spin |
 | "I need domains to send from" | `/zapmail-domain-setup-public` | Dynadot → Zapmail end-to-end, `.com`/`.co` defaults |
-| "Inboxes exist but aren't configured" | `/smartlead-inbox-manager` | Warmup, signatures (name/title/company/address), tags |
+| "Inboxes exist but aren't configured" | `/smartlead-inbox-manager` (or `/instantly-inbox-manager` on Instantly) | Warmup, signatures (name/title/company/address), tags |
 | "I need a list of leads (title-first)" | `/prospeo-full-export` | Paginated search → CSV. Required: `/icp-prompt-builder` on 50-sample first. |
 | "I need a list of leads (title-first), or Prospeo's industry tags miss my vertical" | `/quickenrich-list-builder` | Free discovery + pay-per-email resolution; extra pass catches vertical SaaS mistagged by industry. Required: `/icp-prompt-builder` on 50-sample first. |
 | "I have target domains, need people" | `/blitz-list-builder` | Domain → contacts. Required: `/icp-prompt-builder`. |
@@ -57,7 +57,7 @@ Ongoing: /cold-email-weekly-rhythm
 | "I want 'more companies like X'" | `/disco-like` | Lookalike discovery via seed domains. Required: `/icp-prompt-builder`. |
 | "I want leads from LinkedIn engagement" | `/competitor-engagers` | Competitor post commenters/reactors. Required: `/icp-prompt-builder`. |
 | "List is built, grade it" | `/list-quality-scorecard` | 8-dim grade A+ to F + top issues |
-| "Ready to launch (manual)" | `/smartlead-campaign-upload-public` | DRAFT upload, you hit Start in UI |
+| "Ready to launch (manual)" | `/smartlead-campaign-upload-public` (or `/instantly-campaign-upload-public` on Instantly) | DRAFT upload, you hit Start in UI |
 | "Want it fully automated" | `/auto-research-public` | 8-phase autonomous launcher |
 | "I have replies, how did I do?" | `/positive-reply-scoring` | Positive reply rate (the north star) |
 | "Reply rate dropped, why?" | `/email-deliverability-audit` | SPF/DKIM/DMARC + 1% rule + spam placement |
@@ -70,13 +70,13 @@ Ongoing: /cold-email-weekly-rhythm
 
 1. `/cold-email-kickoff` → orchestrates: ICP → lead magnet → strategy → campaign plan
 2. Follow the kickoff's recommended next skill:
-   - **No infra:** `/zapmail-domain-setup-public` → `/smartlead-inbox-manager` → **wait 2 weeks for warmup**
+   - **No infra:** `/zapmail-domain-setup-public` → `/smartlead-inbox-manager` (or `/instantly-inbox-manager`) → **wait 2 weeks for warmup**
    - **Infra ready:** jump straight to list building
 3. Pick your list source (Prospeo, QuickEnrich, DiscoLike, Google Maps, Blitz, Competitor-Engagers) — each invokes `/icp-prompt-builder` as a required step
 4. `/list-quality-scorecard` — grade the filtered list
 5. `/campaign-copywriting` — write copy for the top campaign from strategy
 6. `/spam-word-checker` — QA (banned words)
-7. `/smartlead-campaign-upload-public` — DRAFT upload, review in Smartlead, hit Start
+7. `/smartlead-campaign-upload-public` (or `/instantly-campaign-upload-public`) — DRAFT upload, review, hit Start
 8. Put `/cold-email-weekly-rhythm` on your calendar
 9. Campaign runs 21 days
 10. `/positive-reply-scoring` → score the outcome
@@ -91,7 +91,7 @@ Once you've done one campaign manually:
    - Monday: `/email-deliverability-audit --days=7`
    - Wednesday: `/positive-reply-scoring` on all active campaigns
    - Friday: retrospective on any campaign hitting day 21
-   - Every 2 weeks: `/smartlead-inbox-manager` → inbox rotation
+   - Every 2 weeks: `/smartlead-inbox-manager` (or `/instantly-inbox-manager`) → inbox rotation
    - Monthly: spam placement test
    - Quarterly: experiment review
 

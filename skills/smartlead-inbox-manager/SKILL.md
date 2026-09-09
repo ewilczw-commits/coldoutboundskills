@@ -237,6 +237,7 @@ npx tsx scripts/set-warmup.ts --mode=disable --tag=retired
 - `/zapmail-domain-setup-public` — creates the inboxes this skill configures
 - `/email-deliverability-audit` — when health dashboard shows problems
 - `/smartlead-api` — underlying API reference
+- `/instantly-inbox-manager` — the Instantly equivalent; same operations, same tagging convention
 
 ## Scripts
 
