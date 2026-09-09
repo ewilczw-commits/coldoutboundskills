@@ -92,6 +92,7 @@ The references/ folder is numbered in the order to read them the first time:
 | 04 | `04-sequence-structure.md` | Timing, follow-ups, threading, A/B testing, spintax |
 | 05 | `05-domain-and-inbox-setup.md` | Dynadot purchase, Zapmail inboxes, export |
 | 06 | `06-list-building-prospeo.md` | Prospeo filters, state-by-state crawling, full-export |
+| 06b | `06b-list-building-quickenrich.md` | Alternative: QuickEnrich — free discovery, pay-per-email, catches vertical SaaS mistagged by industry |
 | 07 | `07-enrichment-library.md` | Optional enrichments + pricing |
 | 08 | `08-smartlead-api.md` | Smartlead API reference |
 | 09 | `09-instantly-api.md` | Instantly API reference |
@@ -111,7 +112,7 @@ The references/ folder is numbered in the order to read them the first time:
 | "I have a product, need campaign ideas" | `02-campaign-strategy.md` |
 | "I have a campaign, need to write emails" | `03-campaign-copywriting.md` + `04-sequence-structure.md` |
 | "I need inboxes but don't have them" | `05-domain-and-inbox-setup.md` |
-| "I need a lead list" | `06-list-building-prospeo.md` |
+| "I need a lead list" | `06-list-building-prospeo.md` (or `06b-list-building-quickenrich.md` — free discovery + catches vertical SaaS mistagged by industry) |
 | "My emails need personalization" | `07-enrichment-library.md` |
 | "Ready to upload to Smartlead" | `08-smartlead-api.md` |
 | "Ready to upload to Instantly" | `09-instantly-api.md` |
@@ -208,6 +209,7 @@ All in `scripts/`. Run with `npx tsx scripts/<name>.ts`.
 | `dynadot-bulk-purchase.ts` | Purchase a batch of domains |
 | `zapmail-full-setup.ts` | NS switch → connect → inboxes → export (4-phase) |
 | `prospeo-full-export.ts` | Full paginated Prospeo search to CSV |
+| `quickenrich-contact-finder.ts` | Alternative: QuickEnrich two-pass search (free discovery + pay-per-email) to CSV |
 | `smartlead-create-campaign.ts` | End-to-end campaign creation |
 | `smartlead-add-leads.ts` | Batch lead upload |
 | `smartlead-pull-analytics.ts` | Daily stats to CSV |
@@ -233,7 +235,7 @@ Every script:
 - Check `13-troubleshooting.md` first — it covers 90% of issues
 - Re-read the platform comparison if you're on the wrong tool
 - For copy: run the QA checklist in `03-campaign-copywriting.md`
-- For lists: re-read filter advice in `06-list-building-prospeo.md`
+- For lists: re-read filter advice in `06-list-building-prospeo.md` (or `06b-list-building-quickenrich.md`)
 - Cold email subreddits (r/coldemail, r/salesdevelopment) are friendly if you post redacted details
 
 ---

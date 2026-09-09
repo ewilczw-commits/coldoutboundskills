@@ -48,8 +48,8 @@ the `run-lane.ts` command it prints (refinalize + recount).
 ```bash
 npx tsx scripts/contacts.ts --config=<lane.json>
 ```
-GetLeads → Blitz → Prospeo (uncapped, all titles) → EVERY contact through the email
-finder (`leads-final.csv` = Final Email only; provider emails are never send-ready).
+GetLeads → Blitz → Prospeo → QuickEnrich (uncapped, all titles) → EVERY contact through
+the email finder (`leads-final.csv` = Final Email only; provider emails are never send-ready).
 contacts.ts ends by writing `leads-final.csv` from provider emails; validate it with
 MillionVerifier before uploading (see SKILL.md "Emails").
 
@@ -70,7 +70,7 @@ MillionVerifier before uploading (see SKILL.md "Emails").
 
 ## NEVER do
 - NEVER cap contacts per company, skip the email finder for "already have an email", or
-  send GetLeads/Blitz/Prospeo emails directly.
+  send GetLeads/Blitz/Prospeo/QuickEnrich emails directly.
 - NEVER crank `PROSPEO_MIN_INTERVAL_MS` down or run Prospeo calls outside lib.ts.
 - NEVER move/rename files inside a run dir, or hand-edit stream CSVs.
 - NEVER hand-write a judge prompt without the template's mandatory blocks.

@@ -1,6 +1,6 @@
 ---
 name: list-builder
-description: META skill — build the largest possible qualified lead list for any request, end to end. Orchestrates discovery (Prospeo + GetLeads + Blitz + Google Maps + lookalike snowball from /list-expander), AI qualification with live-website verify, uncapped contact pull (GetLeads → Blitz → Prospeo), and provider emails (GetLeads/Blitz/Prospeo) validated with MillionVerifier before sending. Use for any "build me a list", "get me leads for X", "find everyone who...", client list request, or campaign list build. Starts with a 7-line intake brief; outputs to Postgres, Google Sheet, and/or CSV (asks which).
+description: META skill — build the largest possible qualified lead list for any request, end to end. Orchestrates discovery (Prospeo + GetLeads + Blitz + Google Maps + lookalike snowball from /list-expander), AI qualification with live-website verify, uncapped contact pull (GetLeads → Blitz → Prospeo → QuickEnrich), and provider emails (GetLeads/Blitz/Prospeo/QuickEnrich) validated with MillionVerifier before sending. Use for any "build me a list", "get me leads for X", "find everyone who...", client list request, or campaign list build. Starts with a 7-line intake brief; outputs to Postgres, Google Sheet, and/or CSV (asks which).
 ---
 
 # List Builder — the meta list-building process
@@ -34,7 +34,8 @@ its provider.
 | Prospeo filters/syntax | `/prospeo-search-api` |
 | Blitz domain→people | `/blitz-list-builder` (`scripts/find-contacts.ts`) |
 | GetLeads counts/exports | `scripts/getleads-client.ts` (counts are free) — optional, skipped without a key |
-| Email validation | provider emails from GetLeads/Blitz/Prospeo → `leads-final.csv`; validate with MillionVerifier (`/cold-email-starter-kit`) before upload |
+| QuickEnrich domain→people (tail-end fallback) | `scripts/quickenrich-client.ts` (discovery free, 1 credit/resolved email) — optional, skipped without a key |
+| Email validation | provider emails from GetLeads/Blitz/Prospeo/QuickEnrich → `leads-final.csv`; validate with MillionVerifier (`/cold-email-starter-kit`) before upload |
 | Judge tuning | `/icp-prompt-builder` |
 | Local/SMB discovery | `/google-maps-list-builder` |
 | List QA before delivery | `/list-quality-scorecard` |
@@ -75,6 +76,7 @@ Put these in a `.env` at the repo root (or `~/.env` — `loadEnv()` reads both) 
 | `OPENAI_ICP_MODEL` | override the judge model (default `gpt-5-nano`) | uses the default |
 | `GETLEADS_API_KEY` | free contact counts + exports, first stop in Phase 4 (sign up at https://getleads.io) | contacts.ts marks GETLEADS `skipped` and every domain falls through to Blitz/Prospeo |
 | `BLITZ_API_KEY` | domain→people fallback via `/blitz-list-builder` (see that skill for signup) | BLITZ stage skips, Prospeo covers those domains |
+| `QUICKENRICH_API_KEY` | domain→people tail-end fallback, LAST in Phase 4, after Prospeo (sign up at https://app.quickenrich.io) | QUICKENRICH_PEOPLE stage skips, those domains stay uncovered |
 | `EXA_API_KEY`, `PARALLEL_AI_API_KEY` | lookalike / entity discovery inside `/list-expander` Phase 2 (sign up at https://exa.ai, https://parallel.ai) | those sub-sources are skipped, seeds + filters still run |
 | `LIST_REGISTRY_DB_URL` | Postgres URL for cross-run dedup (DDL: `references/registry-schema.sql`) | WAL-only dedup: a run never re-judges itself, but earlier runs are not deduped |
 | `MILLIONVERIFIER_API_KEY` | validate `leads-final.csv` before upload (https://millionverifier.com) | OPTIONAL for the build; REQUIRED before you send |
@@ -84,7 +86,7 @@ Put these in a `.env` at the repo root (or `~/.env` — `loadEnv()` reads both) 
 
 ### Emails
 
-GetLeads, Blitz and Prospeo each return an email + verification status per person.
+GetLeads, Blitz, Prospeo and QuickEnrich each return an email + verification status per person.
 `contacts.ts` writes every contact that has one to `leads-final.csv` with an
 `email_status` column (`verified` when the provider says so, else `unverified`). Before
 you upload, run the whole file through MillionVerifier (see `/cold-email-starter-kit`) and
@@ -215,8 +217,12 @@ For every qualified company, pull ALL people matching target titles:
    No key ⇒ the stage is skipped and every domain falls to Blitz/Prospeo.
 2. **Blitz** (optional key): `/blitz-list-builder` `scripts/find-contacts.ts` for domains
    GetLeads covered thinly.
-3. **Prospeo** `/search-person` with `company.websites {include:[...]}` (LAST — most expensive;
-   strip subdomains or the whole batch 400s).
+3. **Prospeo** `/search-person` with `company.websites {include:[...]}` (most expensive of
+   the three; strip subdomains or the whole batch 400s).
+4. **QuickEnrich** (optional key, LAST): `scripts/quickenrich-client.ts` — free discovery
+   via `employees/contact-finder` with `company_url {include:[...]}` batched 200/call,
+   then `employees/search` (1 credit per resolved email) for domains still uncovered
+   after Prospeo. Catches companies the other three tiers simply don't have.
 
 Merge + dedup: `npx tsx scripts/contacts-merge.ts --run=<slug> --csv=<file>:<provider> ...`
 (dedupes by linkedin_url, else domain+first+last; keeps every original column in `raw_json`).

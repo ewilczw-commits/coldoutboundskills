@@ -8,12 +8,14 @@
  * never trusted):
  *   1. GetLeads export (free) — 500-domain batches, ALL seniorities/titles.
  *   2. Blitz find-contacts for domains GetLeads left at zero coverage.
- *   3. Prospeo /search-person LAST for still-zero domains (paid).
- *   4. contacts-merge → leads-final.csv (contacts with a provider email;
+ *   3. Prospeo /search-person for still-zero domains (paid).
+ *   4. QuickEnrich LAST for domains still uncovered after Prospeo (free discovery,
+ *      1 credit/resolved email) — catches companies Prospeo's own coverage missed.
+ *   5. contacts-merge → leads-final.csv (contacts with a provider email;
  *      validate with MillionVerifier before sending — see SKILL.md "Emails").
  *
  * Stages (contacts-state.json, same artifact-based resume as run-lane):
- *   GETLEADS → COVERAGE → BLITZ → PROSPEO_PEOPLE → MERGE → EMAILS → REPORT
+ *   GETLEADS → COVERAGE → BLITZ → PROSPEO_PEOPLE → QUICKENRICH_PEOPLE → MERGE → EMAILS → REPORT
  * Gate: refuses to run unless the lane's summary.md first line is READY
  * (override: --force after human review).
  */
@@ -24,6 +26,7 @@ import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
 import { loadEnv, parseArgs, readCsv, writeCsv, normDomain, prospeoSearch, saveMetrics } from "../../list-expander/scripts/lib";
 import { getleadsExportToCsv, hasGetleadsKey } from "./getleads-client";
+import { quickenrichContactsForDomains, hasQuickenrichKey } from "./quickenrich-client";
 
 loadEnv();
 process.on("unhandledRejection", (e) => console.error("unhandled:", String(e).slice(0, 120)));
@@ -31,7 +34,7 @@ const args = parseArgs();
 const LB = resolve(fileURLToPath(import.meta.url), "..");
 if (!args.config || !existsSync(String(args.config))) {
   console.error("Usage: npx tsx contacts.ts --config=<lane.json> [--force] [--run-dir=<dir>]\n" +
-    "  Runs Phase 4+5 for a READY lane: GetLeads -> Blitz -> Prospeo -> merge -> leads-final.csv (validate with MillionVerifier).");
+    "  Runs Phase 4+5 for a READY lane: GetLeads -> Blitz -> Prospeo -> QuickEnrich -> merge -> leads-final.csv (validate with MillionVerifier).");
   process.exit(1);
 }
 const cfg = JSON.parse(readFileSync(String(args.config), "utf8"));
@@ -72,6 +75,7 @@ const A = {
   getleads: join(runDir, "contacts-getleads.csv"),
   blitz: join(runDir, "contacts-blitz.csv"),
   prospeoPeople: join(runDir, "contacts-prospeo.csv"),
+  quickenrich: join(runDir, "contacts-quickenrich.csv"),
   merged: join(runDir, "contacts-merged.csv"),
   leadsFinal: join(runDir, "leads-final.csv"),
   coverage: join(runDir, "contacts-coverage.json"),
@@ -186,7 +190,22 @@ async function main() {
     mark("PROSPEO_PEOPLE", `${out.length} contacts for ${still.length} uncovered domains`);
   }
 
-  // 5. MERGE
+  // 5. QUICKENRICH people for STILL-still-zero domains (tail-end fallback, paid per
+  // resolved email — see quickenrich-client.ts). Runs unattended like Blitz/Prospeo
+  // above; the lane's READY gate is the human approval checkpoint, not a per-call prompt.
+  if (!done("QUICKENRICH_PEOPLE") && !hasQuickenrichKey()) {
+    writeCsv(A.quickenrich, []);
+    mark("QUICKENRICH_PEOPLE", "skipped: QUICKENRICH_API_KEY not set — those domains stay uncovered");
+  }
+  if (!done("QUICKENRICH_PEOPLE")) {
+    for (const r of existsSync(A.prospeoPeople) ? readCsv(A.prospeoPeople) : []) { const d = normDomain(r.domain || ""); if (d) covered.set(d, (covered.get(d) ?? 0) + 1); }
+    const stillStill = domains.filter((d) => !covered.get(d));
+    const rows = await quickenrichContactsForDomains(stillStill, SENIORITIES.map((s: string) => s.trim()));
+    writeCsv(A.quickenrich, rows);
+    mark("QUICKENRICH_PEOPLE", `${rows.length} contacts for ${stillStill.length} uncovered domains`);
+  }
+
+  // 6. MERGE
   if (!done("MERGE")) {
     // lane-scoped merge dir — a shared "__contacts__" slug let a second lane's run
     // overwrite the first lane's merged contacts (bit us 2026-07-08)
@@ -194,6 +213,7 @@ async function main() {
     const argv = [`--run=${mergeSlug}`, `--csv=${A.getleads}:getleads`];
     if (existsSync(A.blitz) && readCsv(A.blitz).length) argv.push(`--csv=${A.blitz}:blitz`);
     if (existsSync(A.prospeoPeople) && readCsv(A.prospeoPeople).length) argv.push(`--csv=${A.prospeoPeople}:prospeo`);
+    if (existsSync(A.quickenrich) && readCsv(A.quickenrich).length) argv.push(`--csv=${A.quickenrich}:quickenrich`);
     const code = tsx(join(LB, "contacts-merge.ts"), argv);
     if (code !== 0) throw new Error("contacts-merge failed");
     const src = join(homedir(), "output", "list-builder", mergeSlug, "contacts-merged.csv");
@@ -201,8 +221,8 @@ async function main() {
     mark("MERGE", `${readCsv(A.merged).length} unique contacts`);
   }
 
-  // 6. EMAILS — keep every merged contact that has a provider email.
-  // GetLeads / Blitz / Prospeo all return an email + status per person. Rows whose
+  // 7. EMAILS — keep every merged contact that has a provider email.
+  // GetLeads / Blitz / Prospeo / QuickEnrich all return an email + status per person. Rows whose
   // provider says "verified"/"valid" are flagged email_status=verified; everything
   // else is "unverified". Validate the whole file with MillionVerifier before you
   // upload (see SKILL.md "Emails") — never send to unverified/catch-all addresses.
@@ -219,7 +239,7 @@ async function main() {
     mark("EMAILS", `${leads.length} contacts with an email (${nv} provider-verified) — validate with MillionVerifier before sending`);
   }
 
-  // 7. REPORT
+  // 8. REPORT
   saveMetrics(runDir, { contacts_stage: true });
   const leads = existsSync(A.leadsFinal) ? readCsv(A.leadsFinal).length : 0;
   const merged = existsSync(A.merged) ? readCsv(A.merged).length : 0;
